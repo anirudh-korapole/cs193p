@@ -15,22 +15,39 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         // add numberOfPairsOfCards x 2 cards
         for pairIndex in 0..<max(2, numberOfPairsOfCards) {
             let content: CardContent = cardContentFactory(pairIndex)
-            cards.append(Card(content: content))
-            cards.append(Card(content: content))
+            cards.append(Card(content: content, id: "\(pairIndex+1)a"))
+            cards.append(Card(content: content, id: "\(pairIndex+1)b"))
         }
     }
     
     mutating func shuffle() {
         cards.shuffle()
+        print(cards)
     }
     
     
-    func choose(_ card: Card) {
+    mutating func choose(_ card: Card) {
+        let choosenIndex = index(of: card)
+        cards[choosenIndex].isFaceUp.toggle()
+        print("chose \(card)")
+    }
+    
+    func index(of card: Card) -> Int {
+        for index in cards.indices {
+            if cards[index].id == card.id {
+                return index
+            }
+        }
+        return 0 // FIXME: Bogus!
+    }
+    
+    
+    struct Card: Equatable, Identifiable, CustomDebugStringConvertible {
+        var debugDescription: String {
+            return "\(id): \(content) \(isFaceUp ? "up" : "down")\(isMatched ? "matched" : "")"
+        }
         
-    }
-    
-    
-    struct Card: Equatable {
+        
         static func == (lhs: MemoryGame<CardContent>.Card, rhs: MemoryGame<CardContent>.Card) -> Bool {
             return lhs.isFaceUp == rhs.isFaceUp &&
             lhs.isMatched == rhs.isMatched &&
@@ -41,5 +58,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         var isMatched = false
         let content: CardContent
         
+        var id: String
     }
 }
