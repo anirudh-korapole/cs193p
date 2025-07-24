@@ -18,6 +18,7 @@ struct EmojiMemoryGameView: View {
         VStack {
             ScrollView {
                 cards
+                    .animation(.default, value: viewModel.cards)
             }
             Button("Shuffle") {
                 viewModel.shuffle()
@@ -44,7 +45,6 @@ struct EmojiMemoryGameView: View {
     
     struct CardView : View {
         let card: MemoryGame<String>.Card
-        
         
         
         var body: some View {
